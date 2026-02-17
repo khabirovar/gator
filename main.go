@@ -2,8 +2,11 @@ package main
 
 import (
 	"github.com/khabirovar/gator/internal/config"
+	"github.com/khabirovar/gator/internal/database"
 	"log"
 	"os"
+	"database/sql"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -12,7 +15,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	db, err := sql.Open("postgres", cfg.DB_URL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	st := state{
+		db: database.New(db),
 		cfg: &cfg,
 	}
 
@@ -21,6 +30,7 @@ func main() {
 	}
 
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
 
 	args := os.Args 
 	if len(args) <= 2 {
@@ -32,5 +42,8 @@ func main() {
 		args: args[2:],
 	}
 
-	cmds.run(&st, cmd)
+	err = cmds.run(&st, cmd)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
