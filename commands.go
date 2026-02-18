@@ -18,7 +18,6 @@ func (c *commands) run(s *state, cmd command) error {
 	if !ok {
 		return fmt.Errorf("We don't have function '%s' in register", cmd.name)
 	}
-	fmt.Printf("Run handler: %#v\n", handler)
 	return handler(s, cmd)
 }
 

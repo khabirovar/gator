@@ -5,7 +5,6 @@ import (
 	"github.com/khabirovar/gator/internal/database"
 	"log"
 	"os"
-	"fmt"
 	"database/sql"
 	_ "github.com/lib/pq"
 )
@@ -42,6 +41,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = cmds.register("users", handlerUsers)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	args := os.Args 
 	if len(args) <= 1 {
@@ -53,7 +56,7 @@ func main() {
 		args: args[2:],
 	}
 	
-	fmt.Printf("cmd: %#v\n", cmd)
+	//fmt.Printf("Debug: command %#v\n", cmd)
 
 	err = cmds.run(&st, cmd)
 	if err != nil {
