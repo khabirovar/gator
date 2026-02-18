@@ -18,9 +18,15 @@ func (c *commands) run(s *state, cmd command) error {
 	if !ok {
 		return fmt.Errorf("We don't have function '%s' in register", cmd.name)
 	}
+	fmt.Printf("Run handler: %#v\n", handler)
 	return handler(s, cmd)
 }
 
-func (c *commands) register(name string, f func(*state, command) error) {
+func (c *commands) register(name string, f func(*state, command) error) error {
+	if _, ok := c.handlers[name]; ok {
+		return fmt.Errorf("You try overwrite command '%s' in command register", name)
+	}
 	c.handlers[name] = f
+
+	return nil
 }

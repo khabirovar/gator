@@ -5,6 +5,7 @@ import (
 	"github.com/khabirovar/gator/internal/database"
 	"log"
 	"os"
+	"fmt"
 	"database/sql"
 	_ "github.com/lib/pq"
 )
@@ -29,11 +30,21 @@ func main() {
 		handlers: make(map[string]func(*state, command) error),
 	}
 
-	cmds.register("login", handlerLogin)
-	cmds.register("register", handlerRegister)
+	err = cmds.register("login", handlerLogin)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = cmds.register("register", handlerRegister)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = cmds.register("reset", handlerReset)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	args := os.Args 
-	if len(args) <= 2 {
+	if len(args) <= 1 {
 		log.Fatal("command have no arguments")
 	}
 	
@@ -41,6 +52,8 @@ func main() {
 		name: args[1],
 		args: args[2:],
 	}
+	
+	fmt.Printf("cmd: %#v\n", cmd)
 
 	err = cmds.run(&st, cmd)
 	if err != nil {
