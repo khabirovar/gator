@@ -47,3 +47,20 @@ func handlerAddFeed(s *state, cmd command) error {
 
 	return nil
 }
+
+func handlerFeeds(s* state, cmd command) error {
+	feeds, err := s.db.GetFeeds(context.Background())
+	if err != nil {
+		return err
+	}
+
+	if len(feeds) == 0 {
+		fmt.Println("No feeds found")
+		return nil
+	}
+
+	for _, feed := range feeds {
+		fmt.Printf("Feed: %s URL: %s CreatedBy: %s\n", feed.Feed, feed.Url, feed.User)
+	}
+	return nil
+}
