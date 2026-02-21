@@ -3,6 +3,10 @@ package main
 import (
 	"fmt"
 	"context"
+	"errors"
+	"time"
+	"github.com/google/uuid"
+	"github.com/khabirovar/gator/internal/database"
 )
 
 func handlerAgg(s *state, cmd command) error {
@@ -12,5 +16,34 @@ func handlerAgg(s *state, cmd command) error {
 		return err 
 	}
 	fmt.Printf("RSSFeed: %#v\n", rssFeed)
+	return nil
+}
+
+func handlerAddFeed(s *state, cmd command) error {
+	if len(cmd.args) < 2 {
+		return errors.New("HandlerAddFeed expects two arguments")
+	}
+
+	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+	if err != nil {
+		return err
+	}
+	
+	feedParams := database.CreateFeedParams{
+		ID: uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      cmd.args[0],
+		Url:       cmd.args[1],
+		UserID:    user.ID,
+	}
+
+	feed, err := s.db.CreateFeed(context.Background(), feedParams)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Feed: %#v\n", feed)
+
 	return nil
 }
