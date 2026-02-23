@@ -13,3 +13,8 @@ VALUES (
 SELECT feeds.name as feed, feeds.url, users.name as user
 FROM feeds 
 JOIN users ON feeds.user_id = users.id;
+
+-- name: GetFeedByURL :one
+SELECT id, created_at, updated_at, name, url, user_id
+FROM feeds
+WHERE url = $1;
