@@ -49,7 +49,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = cmds.register("addfeed", handlerAddFeed)
+	err = cmds.register("addfeed", middlewareLoggedIn(handlerAddFeed))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,11 +57,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = cmds.register("follow", handlerFollow)
+	err = cmds.register("follow", middlewareLoggedIn(handlerFollow))
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = cmds.register("following", handlerFollowing)
+	err = cmds.register("following", middlewareLoggedIn(handlerFollowing))
 	if err != nil {
 		log.Fatal(err)
 	}
