@@ -65,6 +65,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = cmds.register("unfollow", middlewareLoggedIn(handlerUnfollow))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	args := os.Args 
 	if len(args) <= 1 {
