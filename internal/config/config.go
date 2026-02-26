@@ -1,10 +1,10 @@
 package config
 
 import (
+	"bufio"
+	"encoding/json"
 	"os"
 	"path/filepath"
-	"encoding/json"
-	"bufio"
 )
 
 const (
@@ -12,23 +12,23 @@ const (
 )
 
 type Config struct {
-	DB_URL string `json:"db_url"`
+	DB_URL          string `json:"db_url"`
 	CurrentUserName string `json:"current_user_name"`
 }
 
 func Read() (Config, error) {
-	path, err := getConfigFilePath() 
+	path, err := getConfigFilePath()
 	if err != nil {
 		return Config{}, err
 	}
 
 	file, err := os.Open(path)
 	if err != nil {
-		return Config{}, err 
+		return Config{}, err
 	}
 	defer file.Close()
-	
-	var cfg Config 
+
+	var cfg Config
 	err = json.NewDecoder(bufio.NewReader(file)).Decode(&cfg)
 	if err != nil {
 		return Config{}, err
@@ -58,10 +58,9 @@ func write(cfg *Config) error {
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
-
 
 func getConfigFilePath() (string, error) {
 	home, err := os.UserHomeDir()

@@ -1,27 +1,27 @@
 package main
 
 import (
-	"net/http"
-	"io"
-	"encoding/xml"
 	"context"
+	"encoding/xml"
 	"html"
+	"io"
+	"net/http"
 )
 
 type RSSFeed struct {
 	Channel struct {
-		Title string `xml:"title"`
-		Link string `xml:"link"`
-		Description string `xml:"description"`
-		Item []RSSItem `xml:"item"`
+		Title       string    `xml:"title"`
+		Link        string    `xml:"link"`
+		Description string    `xml:"description"`
+		Item        []RSSItem `xml:"item"`
 	} `xml:"channel"`
 }
 
 type RSSItem struct {
-	Title string `xml:"title"`
-	Link string `xml:"link"`
+	Title       string `xml:"title"`
+	Link        string `xml:"link"`
 	Description string `xml:"description"`
-	PubDate string `xml:"pubDate"`
+	PubDate     string `xml:"pubDate"`
 }
 
 func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {

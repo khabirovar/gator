@@ -1,6 +1,6 @@
 package main
 
-import(
+import (
 	"fmt"
 )
 
@@ -10,7 +10,7 @@ type command struct {
 }
 
 type commands struct {
-	handlers	map[string]func(*state, command) error
+	handlers map[string]func(*state, command) error
 }
 
 func (c *commands) run(s *state, cmd command) error {

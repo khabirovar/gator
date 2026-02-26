@@ -1,9 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/khabirovar/gator/internal/database"
-	"context"
 	"strconv"
 )
 
@@ -19,13 +19,13 @@ func handlerBrowse(s *state, cmd command, user database.User) error {
 
 	paramsPosts := database.GetPostsForUserParams{
 		UserID: user.ID,
-		Limit: limit,
+		Limit:  limit,
 	}
 	posts, err := s.db.GetPostsForUser(context.Background(), paramsPosts)
 	if err != nil {
 		return err
 	}
-	
+
 	for _, post := range posts {
 		fmt.Println("=======================================================")
 		fmt.Printf("Title:\t%s\n", post.Title)

@@ -1,12 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/khabirovar/gator/internal/config"
 	"github.com/khabirovar/gator/internal/database"
+	_ "github.com/lib/pq"
 	"log"
 	"os"
-	"database/sql"
-	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 	}
 
 	st := state{
-		db: database.New(db),
+		db:  database.New(db),
 		cfg: &cfg,
 	}
 
@@ -74,16 +74,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	args := os.Args 
+	args := os.Args
 	if len(args) <= 1 {
 		log.Fatal("command have no arguments")
 	}
-	
+
 	cmd := command{
 		name: args[1],
 		args: args[2:],
 	}
-	
+
 	//fmt.Printf("Debug: command %#v\n", cmd)
 
 	err = cmds.run(&st, cmd)

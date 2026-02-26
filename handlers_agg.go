@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"context"
-	"errors"
-	"time"
-	"github.com/lib/pq"
-	"github.com/khabirovar/gator/internal/database"
 	"database/sql"
+	"errors"
+	"fmt"
+	"github.com/khabirovar/gator/internal/database"
+	"github.com/lib/pq"
+	"time"
 )
 
 func handlerAgg(s *state, cmd command) error {
@@ -22,13 +22,13 @@ func handlerAgg(s *state, cmd command) error {
 
 	ticker := time.NewTicker(timeBetweenReqs)
 	fmt.Printf("Collecting feeds every %s\n", cmd.args[0])
-	for ;; <- ticker.C {
+	for ; ; <-ticker.C {
 		err = scrapeFeeds(s)
 		if err != nil {
-			fmt.Printf("Couldn't collect feed: %v\n", err) 
+			fmt.Printf("Couldn't collect feed: %v\n", err)
 		}
 	}
-	return nil 
+	return nil
 }
 
 func scrapeFeeds(s *state) error {
@@ -56,11 +56,11 @@ func scrapeFeeds(s *state) error {
 		nullPubDate := sql.NullTime{Time: pubDate, Valid: err == nil}
 		nullDescription := sql.NullString{String: article.Description, Valid: article.Description != ""}
 		createPostParam := database.CreatePostParams{
-			Title: article.Title,
-			Url: article.Link,
-			Description:  nullDescription,
-			PublishedAt:  nullPubDate,
-			FeedID: feed.ID,
+			Title:       article.Title,
+			Url:         article.Link,
+			Description: nullDescription,
+			PublishedAt: nullPubDate,
+			FeedID:      feed.ID,
 		}
 		_, err = s.db.CreatePost(context.Background(), createPostParam)
 		if err != nil {
@@ -68,7 +68,7 @@ func scrapeFeeds(s *state) error {
 			if errors.As(err, &pgError) && pgError.Code == "23505" {
 				continue
 			}
-			return err 
+			return err
 		}
 		fmt.Printf("  * %s\n", article.Title)
 	}

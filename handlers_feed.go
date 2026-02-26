@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"context"
 	"errors"
-	"time"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/khabirovar/gator/internal/database"
+	"time"
 )
 
 func handlerAddFeed(s *state, cmd command, user database.User) error {
@@ -15,7 +15,7 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 	}
 
 	feedParams := database.CreateFeedParams{
-		ID: uuid.New(),
+		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Name:      cmd.args[0],
@@ -30,10 +30,10 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 
 	fmt.Printf("Feed: %#v\n", feed)
 
-  return createAndPrintFollow(s, user, feed)
+	return createAndPrintFollow(s, user, feed)
 }
 
-func handlerFeeds(s* state, cmd command) error {
+func handlerFeeds(s *state, cmd command) error {
 	feeds, err := s.db.GetFeeds(context.Background())
 	if err != nil {
 		return err
@@ -54,7 +54,7 @@ func handlerFollow(s *state, cmd command, user database.User) error {
 	if len(cmd.args) < 1 {
 		return errors.New("HandlerFollow expects one argument <url>")
 	}
-	
+
 	feed, err := s.db.GetFeedByURL(context.Background(), cmd.args[0])
 	if err != nil {
 		return err
@@ -65,11 +65,11 @@ func handlerFollow(s *state, cmd command, user database.User) error {
 
 func createAndPrintFollow(s *state, user database.User, feed database.Feed) error {
 	feedFollowParams := database.CreateFeedFollowParams{
-		ID: uuid.New(),
+		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		UserID: user.ID,
-		FeedID: feed.ID,
+		UserID:    user.ID,
+		FeedID:    feed.ID,
 	}
 	follow, err := s.db.CreateFeedFollow(context.Background(), feedFollowParams)
 	if err != nil {
@@ -84,7 +84,7 @@ func handlerFollowing(s *state, cmd command, user database.User) error {
 	if err != nil {
 		return err
 	}
-	
+
 	fmt.Println("Feeds:")
 	for _, follow := range follows {
 		fmt.Printf("  * %s\n", follow.FeedName)
