@@ -5,6 +5,9 @@ import (
 	"context"
 	"errors"
 	"time"
+	"github.com/lib/pq"
+	"github.com/khabirovar/gator/internal/database"
+	"database/sql"
 )
 
 func handlerAgg(s *state, cmd command) error {
@@ -44,8 +47,30 @@ func scrapeFeeds(s *state) error {
 		return err
 	}
 
+	fmt.Println("Posts added to database:")
 	for _, article := range rssFeed.Channel.Item {
-		fmt. Printf("  * %s\n", article.Title)
+		if article.Link == "" {
+			continue
+		}
+		pubDate, err := time.Parse(time.RFC1123Z, article.PubDate)
+		nullPubDate := sql.NullTime{Time: pubDate, Valid: err == nil}
+		nullDescription := sql.NullString{String: article.Description, Valid: article.Description != ""}
+		createPostParam := database.CreatePostParams{
+			Title: article.Title,
+			Url: article.Link,
+			Description:  nullDescription,
+			PublishedAt:  nullPubDate,
+			FeedID: feed.ID,
+		}
+		_, err = s.db.CreatePost(context.Background(), createPostParam)
+		if err != nil {
+			var pgError *pq.Error
+			if errors.As(err, &pgError) && pgError.Code == "23505" {
+				continue
+			}
+			return err 
+		}
+		fmt.Printf("  * %s\n", article.Title)
 	}
 	return nil
 }

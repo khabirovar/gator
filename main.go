@@ -69,6 +69,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = cmds.register("browse", middlewareLoggedIn(handlerBrowse))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	args := os.Args 
 	if len(args) <= 1 {
